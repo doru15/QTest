@@ -1,0 +1,17 @@
+{
+  "name": "QTest",
+  "version": "1.0.0",
+  "description": "Lucrare de licenta, Doru Preda, Automatica si Calculatoare 2017",
+  "main": "parser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Doru Preda <dorupreda15@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^19.0.0",
+    "node-latex": "^2.4.1",
+    "request": "^2.81.0"
+  }
+}

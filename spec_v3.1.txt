@@ -1,0 +1,209 @@
+  * **simple** 1
+  * **errfree** 1
+  * **inchidere** 1
+  * **whattype** 1
+  * **adt** 1
+  * **lazyhaskell** 1
+  * **lazyscheme** 1
+  * **basicprolog** 1
+  * **cutnot** 1
+  * **resat** 1
+  * **unif** 0
+
+
+=== Simple ===
+== Varianta Matei-1 == 
+Care din urmatoarele programe produce inversarea listei [1,2,3]?
+  - foldl (\lb x y->y:x) [] [1,2,3]
+  - foldr (\lb x y->x:y) [] [1,2,3]
+  - let {f (x:xs) y = f xs (x:y) ; f [] y = y ;} in f [1,2,3] []
+  - let {f (x:xs) y = (f xs y)++[x] ; f [] y = y} in f [] [1,2,3]
+
+| (*) 1,3 | 2,3 | 1,4 | 2,4 | 1,2,3 | 1,2,4 | 2,3,4 |
+
+== Varianta Matei-2 == 
+Care din urmatoarele programe intoarce ultimul element din lista [1,2,3]?
+  - head (foldl (\lb x y->y:x) [] [1,2,3])
+  - foldl (\lb x y->y) 0 [1,2,3]
+  - let {f [x] = x ; f (x:xs) = f xs} in f [1,2,3]
+  - let {f (x:xs) = f xs ; f [x] = x} in f [1,2,3]
+
+| 1,3 | 2,3 | 1,4 | 2,4 | (*) 1,2,3 | 1,2,4 | 2,3,4 |
+
+=== ErrFree ===
+== Varianta Matei-1 ==
+Care din urmatoarele programe nu produce eroare de tip?
+  - zipWith (+) [] unde  (+) :: Integer -> Integer -> Integer
+  - foldl (\lb x -> x) []
+  - foldl (:) []
+  - zipWith (:) []
+
+| 1,2 | 1,3 | 2,3 | 2,4 | 1,4 | 1,2,3 | (*) 1,3,4 |
+
+== Varianta Matei-2 == 
+Care din urmatoarele programe nu produce eroare de tip?
+  - map (\lb x->x) []
+  - foldr (+) [] unde (+) :: Integer -> Integer -> Integer
+  - foldr (\lb x -> x) []
+  - map "PP" []
+
+| 1,2 | (*) 1,3 | 2,3 | 2,4 | 1,4 | 1,2,3 | 1,3,4 |
+
+=== Inchidere ===
+== Varianta Matei-1 ==
+Care din urmatoarele apeluri construieste o inchidere functionala cu tipul [a]->[a]?
+  - map (\lb x -> x)
+  - foldr (:) []
+  - (++) []
+
+| 1,2 | 1,3 | 2,3 | nici una | 1 | 3 | (*) 1,2,3 |
+
+== Varianta Matei-2 ==
+Care din urmatoarele apeluri construieste o inchidere functionala cu tipul <nowiki>[[a]]->[a]</nowiki>?
+  - foldl (++) []
+  - map (\lb x->[x])
+  - zipWith (:) []
+
+| 1,2 | 1,3 | 2,3 | nici una | (*) 1 | 3 | 1,2,3 |
+
+=== WhatType ===
+== Varianta Matei-1 ==
+Care este tipul urmatoarei expresii: foldr map?
+  - Eroare de tip
+  - [t] -> [t -> t] -> [t]
+  - ([t] -> t) -> t -> [t]
+  - [t] -> (t -> t) -> [t]
+  - [t] -> t -> (t -> [t])
+  - [t] -> (t -> t -> [t])
+  - [t] -> t -> t -> [t]
+
+| 1 | (*) 2 | 3 | 4 | 5 | 6 | 7 |
+
+== Varianta Matei-2 ==
+Care este tipul urmatoarei expresii: map (:)?
+  - Eroare de tip
+  - <nowiki>[t] -> [[t]] -> [t]</nowiki>
+  - <nowiki>[[t] -> [t]] -> [t]</nowiki>
+  - ([t] -> [t]) -> [t]
+  - [t] -> ([t] -> [t])
+  - ([t] -> [t] -> [t])
+  - <nowiki>[t] -> [[t] -> [t]]</nowiki>
+
+| 1 | 2 | 3 | 4 | 5 | 6 | (*) 7 |
+
+=== ADT ===
+== Varianta Matei-1 ==
+Fie urmatorul tip de date abstract: data T a = A | B String | C a. Care din urmatoarele afirmatii sunt adevarate?
+  - B::Integer -> T
+  - (C "PP") :: T a
+  - Valoarea (B "PP") este polimorfica
+  - A:(B ""):[] produce eroare de tip
+
+| 1 2 | 2 3 | 3 4 | 1 4 | 1 | 2 | (*) 3 |
+
+== Varianta Matei-2 ==
+Fie urmatorul tip de date abstract: data T a = A a | B String | C Integer. Care din urmatoarele afirmatii sunt adevarate?
+  - Tipul este monomorfic
+  - Tipul este polimorfic
+  - B :: String -> T
+  - (B "PP"):(A "PP"):[] produce eroare de tip
+
+| 1 2 | 2 3 | 3 4 | 1 4 | 2 4 | (*) 2 | 2 3 4 |
+
+=== LazyHaskell ===
+== Varianta Matei-1 ==
+De cate ori se evalueaza operatia de adunare in expresia de mai jos?\\ 
+let {y = x + x; z = y + y} in (z+z):(z+z):[]
+
+| 1 | 2 | 3 | (*) 4 | 6 | 8 | 16 |
+
+== Varianta Matei-2 ==
+De cate ori se evalueaza operatia de adunare in expresia de mai jos?\\ 
+let {y = x + x; z = y + y; f u v = u} in f z z
+
+| 1 | (*) 2 | 3 | 4 | 6 | 8 | 10 |
+
+=== LazyScheme ===
+== Varianta Matei-1 ==
+De cate ori se evalueaza operatia de adunare in programul de mai jos?\\ 
+<code>(define v (lambda() (+ 1 1)))
+(+ (v) (v))</code>
+
+| Codul produce eroare | 1 | 2 | (*) 3 | 4 | 6 | 7 |
+
+== Varianta Matei-2 ==
+De cate ori se evalueaza operatia de adunare in programul de mai jos?\\ 
+<code>(define v (lambda(x y) (+ x y))
+(define u (lambda() (+ (v 1 1) (v 1 1))))
+(+ (u) (u))</code>
+
+| Codul produce eroare | 1 | 2 | 3 | 4 | 6 | (*) 7 |
+
+=== BasicProlog ===
+== Varianta Matei-1 ==
+Programul: c(X,Y) :- a(Y), b(X,Y). descrie clauza Horn:
+  - $c(X,Y) \implies b(X,Y) \wedge a(Y)$
+  - $\lnot c(X,Y) \vee \lnot a(Y) \vee b(X,Y)$
+  - $c(X,Y) \implies b(X,Y) \vee a(Y)$
+  - $c(Y,X) \vee a(Y) \implies b(X,Y)$
+  - $\lnot a(Y) \vee \lnot b(X,Y) \vee \lnot c(X,Y)$
+
+| 1 | 2 | 3 | 4 | (*) 5 | 2 3 | 1 3 |
+
+== Varianta Matei-2 ==
+Programul: c(X,Y) :- a(Y), b(X,Y). descrie clauza Horn:
+  - $c(X,Y) \implies b(X,Y) \wedge a(Y)$
+  - $\lnot c(X,Y) \vee \lnot a(Y) \vee b(X,Y)$
+  - $c(X,Y) \implies b(X,Y) \vee a(Y)$
+  - $\lnot a(Y) \vee \lnot b(X,Y) \vee \lnot c(X,Y)$
+  - $c(Y,X) \vee a(Y) \implies b(X,Y)$
+
+| 1 | 2 | 3 | (*) 4 | 5 | 2 3 | 1 3 |
+
+=== CutNot ===
+== Varianta Matei-1 ==
+De cate ori se poate satisface scopul a(X,Y) in:
+<code>a(u,v).
+a(X,Y) :- !.
+a(X,Y) :- a(Y,X).
+a(v,u).</code>
+
+| 0 | 1 | (*) 2 | 3 | 4 | 5 | de o infinitate de ori |
+
+== Varianta Matei-2 ==
+De cate ori se poate satisface scopul a(X,Y) in: 
+<code>a(u,u).
+a(u,v).
+a(X,Y) :- a(X,X), !, a(Y,Y).</code>
+
+| 0 | 1 | 2 | 3 | 4 | 5 | (*) de o infinitate de ori |
+
+=== Resat ===
+== Varianta Matei-1 ==
+De cate ori se poate satisface scopul f(X,Y) in: 
+<code>f(X,Y) :- g(a), g(Y).
+f(X,Y) :- g(X).
+g(a).
+g(b).</code>
+
+| 1 | 2 | 3 | (*) 4 | 6 |
+
+== Varianta Matei-2 ==
+De cate ori se poate satisface scopul f(X,Y) in: 
+<code>f(X,Y) :- g(X), g(Y).
+f(X,Y) :- g(Y).
+g(a).
+g(b).</code>
+
+| 1 | 2 | 3 | 4 | (*) 6 |
+
+=== Unif ===
+== Varianta Matei-1 ==
+Scopul [X|[Y,X]] = [a,[b,Z]] poate fi satisfacut, si daca da - sub ce substitutie ?
+
+| X = a, Y = b, Z = a | X = a, Y = [b,Z] | (*) Nu poate fi satisfacut. | X = a, Y = b, Z = [a] | X = Y, Y = [b,Z] |
+
+== Varianta Matei-2 ==
+Scopul [X,[c,X]] = [a|[Y]] poate fi satisfacut, si daca da - sub ce substitutie ?
+
+| <nowiki>X = a, Y = [[c, a]]</nowiki> | Nu poate fi satisfacut. | X = a, Y = c | (*) X = a, Y = [c, a] | X = a, Y = [X,c] |
